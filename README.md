@@ -186,7 +186,7 @@ Choose Cluster for throughput, Spread for critical small clusters, Partition for
 
 ## 20. VPC Architecture  
 **Answer:** An Amazon VPC is a logically isolated virtual network in AWS【65†L42-L50】. You define its IP CIDR, subnets, route tables, and gateways. For example, a typical VPC might have two AZs, each with a public subnet (has an Internet Gateway) and private subnet (uses a NAT). Instances in public subnets get public IPs via the IGW, while private ones use NAT for outbound internet. Security Groups and Network ACLs enforce firewall rules. VPCs can peer or connect via Transit Gateway for multi-VPC networking.  
-```mermaid
+```
 graph LR
   VPC[VPC (10.0.0.0/16)] --> Subnet1[Public Subnet A (10.0.1.0/24)]
   VPC --> Subnet2[Private Subnet A (10.0.2.0/24)]
@@ -221,7 +221,7 @@ graph LR
 
 ## 26. AWS Transit Gateway  
 **Answer:** AWS Transit Gateway (TGW) is a fully-managed hub that connects multiple VPCs and on-prem networks in a hub-and-spoke model【79†L10-L18】. Each VPC attaches to the TGW, which routes between them and to VPN/Direct Connect attachments. This replaces complex mesh peering. TGW is regional and highly available by design【79†L30-L38】. It supports Transit Gateway Peering for inter-region connectivity. In essence, TGW centralizes routing and simplifies multi-VPC architectures.  
-```mermaid
+```
 graph LR
   TGW[AWS Transit Gateway]
   VPC1[VPC 1]
@@ -238,7 +238,7 @@ graph LR
 
 ## 27. Direct Connect (DX) Architecture  
 **Answer:** AWS Direct Connect provides a dedicated high-bandwidth link from on-prem to AWS【81†L73-L81】. You establish a physical connection at a DX location, create a private virtual interface to your VPC (via a Direct Connect Gateway or Virtual Private Gateway), and use BGP for routing. This offers lower latency and consistent throughput compared to Internet VPN【81†L73-L81】. A common architecture uses two DX links with an on-prem router for redundancy, terminating on two DX locations in the same region. It avoids the public internet for added reliability.  
-```mermaid
+```
 graph LR
   DC[On-Prem Data Center] -- Direct Connect --> DX[AWS Direct Connect]
   DX -- DX Gateway --> TGW[AWS Transit Gateway]
@@ -261,7 +261,7 @@ graph LR
 
 ## 31. Hybrid Networking Architecture  
 **Answer:** A hybrid network connects on-premises data centers with AWS (multi-cloud or data-center to cloud). Typical AWS solutions are Site-to-Site VPN and/or Direct Connect to a VPC’s Virtual Private Gateway or Transit Gateway【79†L17-L24】【81†L73-L81】. For example, you might attach a VPN tunnel and DX link to a Transit Gateway, then attach your VPCs to that TGW. This creates a seamless network, often with BGP peering. Key points include redundant tunnels (for HA) and CIDR planning to avoid overlaps.  
-```mermaid
+```
 graph LR
   subgraph On-Prem
     Router[Enterprise Router]
@@ -321,7 +321,7 @@ graph LR
 
 ## 42. Blue/Green Deployment Architecture  
 **Answer:** Blue-green means running two identical environments: blue (current) and green (new). Use a load balancer or DNS to switch traffic. For example, with ALB weighted target groups, start with 100% blue, deploy new version to green, then change weights (e.g. 50/50) until green is fully live. Or swap Route 53 CNAME from blue to green. This allows instant rollback (just restore 100% to blue).  
-```mermaid
+```
 graph LR
   LB[Load Balancer] -- 100% --> Blue[Blue (Current) Service]
   style Blue fill:#bbf
@@ -422,7 +422,7 @@ Each class balances cost vs availability/latency. For example, a nightly backup 
 
 ## 63. Database Migration to AWS (DMS, Snowball)  
 **Answer:** For database migration, AWS Database Migration Service (DMS) is common: it creates a replication instance that migrates data to an AWS target (with minimal downtime). For huge offline transfers, use AWS Snowball (physical device) to ship terabytes of data. A hybrid approach could be Snowball (to bulk load data into S3 or target DB) followed by DMS CDC for final sync. Use DMS for homogeneous (e.g. MySQL→Aurora) or heterogeneous (Oracle→MySQL) with or without schema conversion.  
-```mermaid
+```
 graph LR
   OnPremDB -->|Full dump| Snowball[Snowball Edge]
   Snowball -->|Ship to AWS| S3
